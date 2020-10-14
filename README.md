@@ -6,7 +6,7 @@
 
 ## Features
 
-- Backs up the entire savefile folder (including saves from mods) everytime the game saves and put them into time-based folder
+- Backs up the entire savefile folder (including saves from mods) every time the game saves and put them into time-based folder
 - Auto delete old backups if you don't want the backup folder becomes too large
 
 ## Download
