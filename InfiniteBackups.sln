@@ -1,0 +1,16 @@
+
+Microsoft Visual Studio Solution File, Format Version 12.00
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "InfiniteBackups", "InfiniteBackups.csproj", "{AA23A4E5-99C4-4603-A535-B0833609D0BC}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{AA23A4E5-99C4-4603-A535-B0833609D0BC}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{AA23A4E5-99C4-4603-A535-B0833609D0BC}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{AA23A4E5-99C4-4603-A535-B0833609D0BC}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{AA23A4E5-99C4-4603-A535-B0833609D0BC}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+EndGlobal

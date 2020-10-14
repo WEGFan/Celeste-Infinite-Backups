@@ -1,0 +1,6 @@
+- Name: InfiniteBackups
+  Version: 1.0.0
+  DLL: bin/InfiniteBackups.dll
+  Dependencies:
+    - Name: Everest
+      Version: 1.1942.0
