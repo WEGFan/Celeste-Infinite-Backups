@@ -68,9 +68,9 @@ namespace Celeste.Mod.InfiniteBackups {
                 100,
                 DeleteBackupsOlderThanDays);
             item.Change(value => {
-                // skip values between 0 days and 2 days
-                if (value > -1 && value < 3) {
-                    item.Index = item.LastDir > 0 ? 3 : -1;
+                // skip 0 days
+                if (value > -1 && value < 1) {
+                    item.Index = item.LastDir > 0 ? 1 : -1;
                     value = item.Index;
                 }
                 DeleteBackupsOlderThanDays = value;
@@ -92,9 +92,9 @@ namespace Celeste.Mod.InfiniteBackups {
                 500,
                 DeleteBackupsAfterAmount);
             item.Change(value => {
-                // skip values between 0 and 4
-                if (value > -1 && value < 5) {
-                    item.Index = item.LastDir > 0 ? 5 : -1;
+                // skip 0
+                if (value > -1 && value < 1) {
+                    item.Index = item.LastDir > 0 ? 1 : -1;
                     value = item.Index;
                 }
                 DeleteBackupsAfterAmount = value;
