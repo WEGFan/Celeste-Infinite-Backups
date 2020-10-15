@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.IO;
 using System.Linq;
 using Celeste.Mod.InfiniteBackups.Utils;
 using Microsoft.Xna.Framework;
@@ -112,7 +113,11 @@ namespace Celeste.Mod.InfiniteBackups {
             TextMenu.Item item = new TextMenu.Button(DialogId.Options.OpenBackupFolder.DialogClean())
                 .Pressed(() => {
                     try {
-                        Process.Start(Modules.InfiniteBackups.BackupPath);
+                        string backupPath = Modules.InfiniteBackups.BackupPath;
+                        if (!Directory.Exists(backupPath)) {
+                            Directory.CreateDirectory(backupPath);
+                        }
+                        Process.Start(backupPath);
                     } catch (Exception err) {
                         LogUtil.Log("Open backup folder failed!", LogLevel.Warn);
                         err.LogDetailed();
