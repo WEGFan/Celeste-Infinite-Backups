@@ -22,7 +22,7 @@ namespace Celeste.Mod.InfiniteBackups {
             Logger.SetLogLevel(LoggerTagName, LogLevel.Info);
 #endif
 
-            if (!Hooked) {
+            if (!Hooked && Settings.Enabled) {
                 Modules.InfiniteBackups.Load();
 
                 Hooked = true;
