@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 import re
 import subprocess
+import sys
 import zipfile
 from itertools import chain
 from pathlib import Path
@@ -29,10 +30,13 @@ with open('./InfiniteBackups.csproj', 'r+', encoding='utf-8') as f:
     f.write(s)
 
 # build the project
-subprocess.run(['dotnet', 'build', '--configuration', 'Release'])
+process = subprocess.run(['dotnet', 'build', '--configuration', 'Release'])
+if process.returncode != 0:
+    print('build failed')
+    sys.exit()
 
 # package
-file_list = ['./bin/**/*', './Dialog/**/*', './everest.yaml']
+file_list = ['./bin/InfiniteBackups.*', './Dialog/**/*', './everest.yaml']
 
 with zipfile.ZipFile(f'{mod_name}_v{mod_version}.zip', 'w', zipfile.ZIP_DEFLATED) as f:
     for file in chain(*[Path('.').glob(i) for i in file_list]):
