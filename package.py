@@ -16,13 +16,13 @@ mod_version = mod_metadata[0]['Version']
 
 print(mod_name, mod_version)
 
-# update AssemblyVersion in AssemblyInfo.cs to match the mod version
-with open('./Properties/AssemblyInfo.cs', 'r+', encoding='utf-8') as f:
+# update AssemblyVersion in project file to match the mod version
+with open('./InfiniteBackups.csproj', 'r+', encoding='utf-8') as f:
     s = f.read()
     f.seek(0)
     f.truncate()
 
-    s = re.sub(r'^(\[assembly: AssemblyVersion\(")(.*?)("\)\])$',
+    s = re.sub(r'^(\s+<AssemblyVersion>)(.*?)(</AssemblyVersion>)$',
                f'\\g<1>{mod_version}.0\\g<3>',
                s, flags=re.MULTILINE)
 
