@@ -45,7 +45,7 @@ namespace Celeste.Mod.InfiniteBackups.Modules {
                         result = true;
                     } catch (Exception err) {
                         LogUtil.Log("Backup saves failed!", LogLevel.Warn);
-                        err.LogDetailed();
+                        err.LogDetailed(InfiniteBackupsModule.LoggerTagName);
                         result = false;
                     }
 
@@ -58,7 +58,7 @@ namespace Celeste.Mod.InfiniteBackups.Modules {
                             deleteOutdatedSaves();
                         } catch (Exception err) {
                             LogUtil.Log("Delete outdated backups failed!", LogLevel.Warn);
-                            err.LogDetailed();
+                            err.LogDetailed(InfiniteBackupsModule.LoggerTagName);
                         }
                     }
                 });
