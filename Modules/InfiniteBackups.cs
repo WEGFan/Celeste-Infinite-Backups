@@ -90,22 +90,26 @@ namespace Celeste.Mod.InfiniteBackups.Modules {
                 .OrderByDescending(item => item.Name)
                 .ToList();
 
-            List<FileSystemInfo> deleteList = new List<FileSystemInfo>();
+            HashSet<FileSystemInfo> deleteList = new HashSet<FileSystemInfo>();
 
             if (InfiniteBackupsModule.Settings.DeleteBackupsAfterAmount != -1) {
-                deleteList.AddRange(backups
-                    .Skip(InfiniteBackupsModule.Settings.DeleteBackupsAfterAmount));
+                deleteList.UnionWith(
+                    backups
+                        .Skip(InfiniteBackupsModule.Settings.DeleteBackupsAfterAmount)
+                );
             }
 
             if (InfiniteBackupsModule.Settings.DeleteBackupsOlderThanDays != -1) {
-                deleteList.AddRange(backups
-                    .Where(dir => {
-                        DateTime? backupTime = parseBackupTime(dir.Name);
-                        if (backupTime == null) {
-                            return false;
-                        }
-                        return backupTime < DateTime.Now.AddDays(-InfiniteBackupsModule.Settings.DeleteBackupsOlderThanDays);
-                    }));
+                deleteList.UnionWith(
+                    backups
+                        .Where(dir => {
+                            DateTime? backupTime = parseBackupTime(dir.Name);
+                            if (backupTime == null) {
+                                return false;
+                            }
+                            return backupTime < DateTime.Now.AddDays(-InfiniteBackupsModule.Settings.DeleteBackupsOlderThanDays);
+                        })
+                );
             }
 
             foreach (FileSystemInfo backup in deleteList) {
