@@ -120,8 +120,9 @@ namespace Celeste.Mod.InfiniteBackups.Modules {
                     } else {
                         backup.Delete();
                     }
-                } catch (DirectoryNotFoundException err) {
-                    // ignored
+                } catch (IOException err) {
+                    LogUtil.Log($"Deleting {backup.Name} failed!", LogLevel.Warn);
+                    err.LogDetailed(InfiniteBackupsModule.LoggerTagName);
                 }
             }
         }
