@@ -9,6 +9,7 @@ namespace Celeste.Mod.InfiniteBackups.Utils {
 
         public static class Options {
             public const string Enabled = OptionsPrefix + "ENABLED";
+            public const string BackupAsZipFile = OptionsPrefix + "BACKUP_AS_ZIP_FILE";
             public const string AutoDeleteOldBackups = OptionsPrefix + "AUTO_DELETE_OLD_BACKUPS";
             public const string DeleteBackupsOlderThanDays = OptionsPrefix + "DELETE_BACKUPS_OLDER_THAN_DAYS";
             public const string DeleteBackupsAfterAmount = OptionsPrefix + "DELETE_BACKUPS_AFTER_AMOUNT";

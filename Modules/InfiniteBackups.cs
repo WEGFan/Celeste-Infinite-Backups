@@ -5,6 +5,7 @@ using System.IO;
 using System.Linq;
 using System.Reflection;
 using Celeste.Mod.InfiniteBackups.Utils;
+using Ionic.Zip;
 using MonoMod.Cil;
 using MonoMod.Utils;
 
@@ -41,7 +42,11 @@ namespace Celeste.Mod.InfiniteBackups.Modules {
                     LogUtil.Log("Backing up saves...", LogLevel.Info);
                     bool result;
                     try {
-                        backupSaves();
+                        if (InfiniteBackupsModule.Settings.BackupAsZipFile) {
+                            backupSavesAsZipFile();
+                        } else {
+                            backupSaves();
+                        }
                         result = true;
                     } catch (Exception err) {
                         LogUtil.Log("Backup saves failed!", LogLevel.Warn);
@@ -65,29 +70,35 @@ namespace Celeste.Mod.InfiniteBackups.Modules {
             }
         }
 
-        private static DateTime? parseBackupTime(string directoryName) {
+        private static DateTime? parseBackupTime(string name) {
+            // if it's a zip file, first remove the extension
+            if (name.EndsWith(".zip", StringComparison.OrdinalIgnoreCase)) {
+                name = name.Remove(name.LastIndexOf(".zip", StringComparison.OrdinalIgnoreCase));
+            }
             DateTime parsed;
-            bool result = DateTime.TryParseExact(directoryName, "'backup_'yyyy-MM-dd_HH-mm-ss-fff",
+            bool result = DateTime.TryParseExact(name, "'backup_'yyyy-MM-dd_HH-mm-ss-fff",
                 CultureInfo.InvariantCulture, DateTimeStyles.None, out parsed);
-            LogUtil.Log($"Parsing {directoryName}, result = {result}, parsed = {parsed}");
+            LogUtil.Log($"Parsing {name}, result = {result}, parsed = {parsed}");
 
             return result ? (DateTime?)parsed : null;
         }
 
         private static void deleteOutdatedSaves() {
-            List<DirectoryInfo> directories = new DirectoryInfo(BackupPath).GetDirectories()
-                .OrderByDescending(dir => dir.Name)
+            List<FileSystemInfo> backups = new DirectoryInfo(BackupPath)
+                .GetFileSystemInfos("backup_*")
+                .Where(item => parseBackupTime(item.Name) != null)
+                .OrderByDescending(item => item.Name)
                 .ToList();
 
-            List<DirectoryInfo> deleteList = new List<DirectoryInfo>();
+            List<FileSystemInfo> deleteList = new List<FileSystemInfo>();
 
             if (InfiniteBackupsModule.Settings.DeleteBackupsAfterAmount != -1) {
-                deleteList.AddRange(directories
+                deleteList.AddRange(backups
                     .Skip(InfiniteBackupsModule.Settings.DeleteBackupsAfterAmount));
             }
 
             if (InfiniteBackupsModule.Settings.DeleteBackupsOlderThanDays != -1) {
-                deleteList.AddRange(directories
+                deleteList.AddRange(backups
                     .Where(dir => {
                         DateTime? backupTime = parseBackupTime(dir.Name);
                         if (backupTime == null) {
@@ -97,10 +108,14 @@ namespace Celeste.Mod.InfiniteBackups.Modules {
                     }));
             }
 
-            foreach (DirectoryInfo dir in deleteList) {
-                LogUtil.Log($"Deleting {dir}", LogLevel.Info);
+            foreach (FileSystemInfo backup in deleteList) {
+                LogUtil.Log($"Deleting {backup}", LogLevel.Info);
                 try {
-                    dir.Delete(true);
+                    if (backup is DirectoryInfo directory) {
+                        directory.Delete(true);
+                    } else {
+                        backup.Delete();
+                    }
                 } catch (DirectoryNotFoundException err) {
                     // ignored
                 }
@@ -117,6 +132,18 @@ namespace Celeste.Mod.InfiniteBackups.Modules {
             DirectoryInfo saveDirectory = new DirectoryInfo(SavePath);
 
             cloneDirectory(saveDirectory, backupDirectory);
+
+            LogUtil.Log($"Saves backed up to {path}", LogLevel.Info);
+        }
+
+        private static void backupSavesAsZipFile() {
+            string zipFileName = "backup_" + DateTime.Now.ToString("yyyy-MM-dd_HH-mm-ss-fff") + ".zip";
+            string path = Path.Combine(BackupPath, zipFileName);
+
+            using (ZipFile zipFile = new ZipFile()) {
+                zipFile.AddDirectory(SavePath);
+                zipFile.Save(path);
+            }
 
             LogUtil.Log($"Saves backed up to {path}", LogLevel.Info);
         }

@@ -16,6 +16,8 @@ namespace Celeste.Mod.InfiniteBackups {
         public bool LogToIngameConsole { get; set; } = true;
 #endif
 
+        public bool BackupAsZipFile { get; set; } = true;
+
         public bool AutoDeleteOldBackups { get; set; } = false;
 
         public int DeleteBackupsOlderThanDays { get; set; } = -1;
@@ -48,6 +50,15 @@ namespace Celeste.Mod.InfiniteBackups {
             textMenu.Add(item);
         }
 #endif
+
+        public void CreateBackupAsZipFileEntry(TextMenu textMenu, bool inGame) {
+            TextMenu.Item item = new TextMenu.OnOff(DialogId.Options.BackupAsZipFile.DialogClean(), BackupAsZipFile)
+                .Change(value => {
+                    BackupAsZipFile = value;
+                });
+            textMenu.Add(item);
+            menuItems.Add(DialogId.Options.BackupAsZipFile, item);
+        }
 
         public void CreateAutoDeleteOldBackupsEntry(TextMenu textMenu, bool inGame) {
             TextMenu.Item item = new TextMenu.OnOff(DialogId.Options.AutoDeleteOldBackups.DialogClean(), AutoDeleteOldBackups)
@@ -167,6 +178,7 @@ namespace Celeste.Mod.InfiniteBackups {
 #if DEBUG
             CreateLogToIngameConsoleEntry(menu, inGame);
 #endif
+            CreateBackupAsZipFileEntry(menu, inGame);
             CreateAutoDeleteOldBackupsEntry(menu, inGame);
             CreateDeleteBackupsOlderThanDaysEntry(menu, inGame);
             CreateDeleteBackupsAfterAmountEntry(menu, inGame);
