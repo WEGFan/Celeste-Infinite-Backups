@@ -144,7 +144,7 @@ namespace Celeste.Mod.InfiniteBackups {
             menuItems.Add(DialogId.Options.OpenBackupFolder, item);
 
             // split the string into multiple lines to prevent off-screen menus caused by long path
-            string[] descriptionLines = string.Format(DialogId.Subtext.BackupLocation.DialogGet(), Modules.InfiniteBackups.BackupPath).SplitIntoFixedLength(50);
+            string[] descriptionLines = string.Format(DialogId.Subtext.BackupLocation.DialogGet(), Path.GetFullPath(Modules.InfiniteBackups.BackupPath)).SplitIntoFixedLength(50);
             TextMenuExt.EaseInSubHeaderExt backupLocationSubtext = new TextMenuExt.EaseInSubHeaderExt(string.Join("\n", descriptionLines), false, textMenu) {
                 TextColor = Color.Gray
             };
