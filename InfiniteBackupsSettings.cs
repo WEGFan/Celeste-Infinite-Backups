@@ -149,8 +149,8 @@ namespace Celeste.Mod.InfiniteBackups {
                 TextColor = Color.Gray
             };
             // increase the height and make it vertical align
-            backupLocationSubtext.HeightExtra = (descriptionLines.Length - 1) * ActiveFont.LineHeight * 0.6f;
-            backupLocationSubtext.Offset = new Vector2(0f, -backupLocationSubtext.HeightExtra / 2);
+            backupLocationSubtext.HeightExtra = (backupLocationSubtext.Title.Split('\n').Length - 1) * ActiveFont.LineHeight * 0.6f;
+            backupLocationSubtext.Offset = new Vector2(0f, -Math.Max(0f, -16f + backupLocationSubtext.HeightExtra) + textMenu.ItemSpacing);
             textMenu.Add(backupLocationSubtext);
 
             TextMenuExt.EaseInSubHeaderExt openFailedSubtext = new TextMenuExt.EaseInSubHeaderExt(DialogId.Subtext.OpenBackupFolderFailed.DialogClean(), false, textMenu) {
