@@ -22,7 +22,7 @@ namespace Celeste.Mod.InfiniteBackups.Modules {
         private static void patch_UserIO_SaveThread(ILContext il) {
             ILCursor cursor = new ILCursor(il);
 
-            if (cursor.TryGotoNext(MoveType.Before,
+            if (cursor.TryGotoNext(MoveType.AfterLabel,
                 instr => instr.MatchCall(typeof(UserIO), nameof(UserIO.Close)))) {
                 /*
                 ...
