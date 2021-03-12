@@ -54,8 +54,7 @@ namespace Celeste.Mod.InfiniteBackups.Modules {
                         result = false;
                     }
 
-                    typeof(UserIO).GetProperty("SavingResult")
-                        .SetValue(null, UserIO.SavingResult & result);
+                    dd_UserIO.Set(nameof(UserIO.SavingResult), UserIO.SavingResult & result);
 
                     if (InfiniteBackupsModule.Settings.AutoDeleteOldBackups) {
                         LogUtil.Log("Deleting outdated backups...", LogLevel.Info);
@@ -168,12 +167,10 @@ namespace Celeste.Mod.InfiniteBackups.Modules {
             }
         }
 
-        public static readonly string BackupPath = (string)typeof(UserIO)
-            .GetField("BackupPath", BindingFlags.NonPublic | BindingFlags.Static)
-            .GetValue(null);
+        private static readonly DynamicData dd_UserIO = new DynamicData(typeof(UserIO));
 
-        public static readonly string SavePath = (string)typeof(UserIO)
-            .GetField("SavePath", BindingFlags.NonPublic | BindingFlags.Static)
-            .GetValue(null);
+        public static readonly string BackupPath = dd_UserIO.Get<string>("BackupPath");
+
+        public static readonly string SavePath = dd_UserIO.Get<string>("SavePath");
     }
 }
