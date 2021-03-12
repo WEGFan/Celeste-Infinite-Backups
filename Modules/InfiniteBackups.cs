@@ -43,9 +43,9 @@ namespace Celeste.Mod.InfiniteBackups.Modules {
                     bool result;
                     try {
                         if (InfiniteBackupsModule.Settings.BackupAsZipFile) {
-                            backupSavesAsZipFile();
+                            BackupSavesAsZipFile();
                         } else {
-                            backupSaves();
+                            BackupSaves();
                         }
                         result = true;
                     } catch (Exception err) {
@@ -60,7 +60,7 @@ namespace Celeste.Mod.InfiniteBackups.Modules {
                     if (InfiniteBackupsModule.Settings.AutoDeleteOldBackups) {
                         LogUtil.Log("Deleting outdated backups...", LogLevel.Info);
                         try {
-                            deleteOutdatedSaves();
+                            DeleteOutdatedSaves();
                         } catch (Exception err) {
                             LogUtil.Log("Delete outdated backups failed!", LogLevel.Warn);
                             err.LogDetailed(InfiniteBackupsModule.LoggerTagName);
@@ -70,7 +70,7 @@ namespace Celeste.Mod.InfiniteBackups.Modules {
             }
         }
 
-        private static DateTime? parseBackupTime(string name) {
+        private static DateTime? ParseBackupTime(string name) {
             // if it's a zip file, first remove the extension
             if (name.EndsWith(".zip", StringComparison.OrdinalIgnoreCase)) {
                 name = name.Remove(name.LastIndexOf(".zip", StringComparison.OrdinalIgnoreCase));
@@ -83,10 +83,10 @@ namespace Celeste.Mod.InfiniteBackups.Modules {
             return result ? (DateTime?)parsed : null;
         }
 
-        private static void deleteOutdatedSaves() {
+        private static void DeleteOutdatedSaves() {
             List<FileSystemInfo> backups = new DirectoryInfo(BackupPath)
                 .GetFileSystemInfos("backup_*")
-                .Where(item => parseBackupTime(item.Name) != null)
+                .Where(item => ParseBackupTime(item.Name) != null)
                 .OrderByDescending(item => item.Name)
                 .ToList();
 
@@ -103,7 +103,7 @@ namespace Celeste.Mod.InfiniteBackups.Modules {
                 deleteList.UnionWith(
                     backups
                         .Where(dir => {
-                            DateTime? backupTime = parseBackupTime(dir.Name);
+                            DateTime? backupTime = ParseBackupTime(dir.Name);
                             if (backupTime == null) {
                                 return false;
                             }
@@ -127,7 +127,7 @@ namespace Celeste.Mod.InfiniteBackups.Modules {
             }
         }
 
-        private static void backupSaves() {
+        private static void BackupSaves() {
             string directoryName = "backup_" + DateTime.Now.ToString("yyyy-MM-dd_HH-mm-ss-fff");
 
             string path = Path.Combine(BackupPath, directoryName);
@@ -136,12 +136,12 @@ namespace Celeste.Mod.InfiniteBackups.Modules {
             DirectoryInfo backupDirectory = Directory.CreateDirectory(path);
             DirectoryInfo saveDirectory = new DirectoryInfo(SavePath);
 
-            cloneDirectory(saveDirectory, backupDirectory);
+            CloneDirectory(saveDirectory, backupDirectory);
 
             LogUtil.Log($"Saves backed up to {path}", LogLevel.Info);
         }
 
-        private static void backupSavesAsZipFile() {
+        private static void BackupSavesAsZipFile() {
             string zipFileName = "backup_" + DateTime.Now.ToString("yyyy-MM-dd_HH-mm-ss-fff") + ".zip";
             string path = Path.Combine(BackupPath, zipFileName);
 
@@ -153,7 +153,7 @@ namespace Celeste.Mod.InfiniteBackups.Modules {
             LogUtil.Log($"Saves backed up to {path}", LogLevel.Info);
         }
 
-        public static void cloneDirectory(DirectoryInfo source, DirectoryInfo target) {
+        public static void CloneDirectory(DirectoryInfo source, DirectoryInfo target) {
             Directory.CreateDirectory(target.FullName);
 
             // copy each file into the new directory
@@ -164,7 +164,7 @@ namespace Celeste.Mod.InfiniteBackups.Modules {
             // copy each subdirectory using recursion
             foreach (DirectoryInfo directory in source.GetDirectories()) {
                 DirectoryInfo subdirectory = target.CreateSubdirectory(directory.Name);
-                cloneDirectory(directory, subdirectory);
+                CloneDirectory(directory, subdirectory);
             }
         }
 

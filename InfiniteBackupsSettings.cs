@@ -35,7 +35,7 @@ namespace Celeste.Mod.InfiniteBackups {
                     } else {
                         InfiniteBackupsModule.Instance.Unload();
                     }
-                    refreshItemsStates();
+                    RefreshItemsStates();
                 });
             textMenu.Add(item);
             menuItems.Add(DialogId.Options.Enabled, item);
@@ -64,7 +64,7 @@ namespace Celeste.Mod.InfiniteBackups {
             TextMenu.Item item = new TextMenu.OnOff(DialogId.Options.AutoDeleteOldBackups.DialogClean(), AutoDeleteOldBackups)
                 .Change(value => {
                     AutoDeleteOldBackups = value;
-                    refreshItemsStates();
+                    RefreshItemsStates();
                 });
             textMenu.Add(item);
             menuItems.Add(DialogId.Options.AutoDeleteOldBackups, item);
@@ -184,10 +184,10 @@ namespace Celeste.Mod.InfiniteBackups {
             CreateDeleteBackupsAfterAmountEntry(menu, inGame);
             CreateOpenBackupFolderEntry(menu, inGame);
 
-            refreshItemsStates();
+            RefreshItemsStates();
         }
 
-        private void refreshItemsStates() {
+        private void RefreshItemsStates() {
             TextMenu.Item[] visibilitySkipItems = {
                 menuItems[DialogId.Options.Enabled],
                 menuItems[DialogId.Options.OpenBackupFolder]

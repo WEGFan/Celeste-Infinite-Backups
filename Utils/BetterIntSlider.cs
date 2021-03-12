@@ -27,7 +27,7 @@ namespace Celeste.Mod.InfiniteBackups.Utils {
             Max = max;
             Index = value < min ? min : value > max ? max : value;
             ValuesFunc = valuesFunc;
-            ValueWidthFunc = defaultValueWidth;
+            ValueWidthFunc = GetDefaultValueWidth;
         }
 
         public BetterIntSlider Change(Action<int> action) {
@@ -39,7 +39,7 @@ namespace Celeste.Mod.InfiniteBackups.Utils {
             Container.InnerContent = TextMenu.InnerContentMode.TwoColumn;
         }
 
-        private int getIndexDelta() {
+        private int GetIndexDelta() {
             if (fastMoveTimer < 1) {
                 return 1;
             }
@@ -62,7 +62,7 @@ namespace Celeste.Mod.InfiniteBackups.Utils {
             if (Index > Min) {
                 Audio.Play("event:/ui/main/button_toggle_off");
                 PreviousIndex = Index;
-                Index -= getIndexDelta();
+                Index -= GetIndexDelta();
                 Index = Math.Max(Min, Index); // ensure we stay within bounds
                 LastDir = -1;
                 ValueWiggler.Start();
@@ -80,7 +80,7 @@ namespace Celeste.Mod.InfiniteBackups.Utils {
             if (Index < Max) {
                 Audio.Play("event:/ui/main/button_toggle_on");
                 PreviousIndex = Index;
-                Index += getIndexDelta();
+                Index += GetIndexDelta();
                 Index = Math.Min(Max, Index); // ensure we stay within bounds
                 LastDir = 1;
                 ValueWiggler.Start();
@@ -122,7 +122,7 @@ namespace Celeste.Mod.InfiniteBackups.Utils {
             return valueWidth.Value;
         }
 
-        private float defaultValueWidth() {
+        private float GetDefaultValueWidth() {
             float width = 0f;
             for (int i = Min; i <= Max; i++) {
                 width = Math.Max(width, ActiveFont.Measure(ValuesFunc(i)).X);
