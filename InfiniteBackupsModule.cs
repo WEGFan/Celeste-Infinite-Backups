@@ -18,9 +18,7 @@ namespace Celeste.Mod.InfiniteBackups {
         public static bool Hooked = false;
 
         public override void Load() {
-#if !DEBUG
             Logger.SetLogLevel(LoggerTagName, LogLevel.Info);
-#endif
 
             if (!Hooked && Settings.Enabled) {
                 Modules.InfiniteBackups.Load();
