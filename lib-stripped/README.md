@@ -1,3 +1,1 @@
-The versions here are versions stripped with mono-cil-strip.
-
-**DON'T PUSH THE ORIGINAL VERSIONS OF THE STRIPPED LIBS!**
+These are stripped versions of `Celeste 1.3.1.2 [Everest: 2707-azure-e2671]` with [mono-cil-strip](https://github.com/mono/mono/tree/master/mcs/tools/cil-strip), for being able to compile without having the game installed.
