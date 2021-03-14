@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
 using System.Linq;
-using System.Reflection;
 using Celeste.Mod.InfiniteBackups.Utils;
 using Ionic.Zip;
 using MonoMod.Cil;
@@ -22,9 +21,14 @@ namespace Celeste.Mod.InfiniteBackups.Modules {
         private static void patch_UserIO_SaveThread(ILContext il) {
             ILCursor cursor = new ILCursor(il);
 
-            if (cursor.TryGotoNext(MoveType.AfterLabel,
-                instr => instr.MatchCall(typeof(UserIO), nameof(UserIO.Close)))) {
-                /*
+            if (!cursor.TryGotoNext(MoveType.AfterLabel,
+                instr => instr.MatchCall(typeof(UserIO), nameof(UserIO.Close)))
+            ) {
+                LogUtil.Log($"Failed patching {cursor.Method.Name}!", LogLevel.Warn);
+                return;
+            }
+
+            /*
                 ...
                 if (UserIO.Open(UserIO.Mode.Write)) {
                     ...
@@ -35,38 +39,36 @@ namespace Celeste.Mod.InfiniteBackups.Modules {
                     UserIO.Close();
                 }
                 ...
-                */
-                LogUtil.Log($"Patching at {cursor.Index} for {cursor.Method.Name}");
+            */
 
-                cursor.EmitDelegate<Action>(() => {
-                    LogUtil.Log("Backing up saves...", LogLevel.Info);
-                    bool result;
+            cursor.EmitDelegate<Action>(() => {
+                LogUtil.Log("Backing up saves...", LogLevel.Info);
+                bool result;
+                try {
+                    if (InfiniteBackupsModule.Settings.BackupAsZipFile) {
+                        BackupSavesAsZipFile();
+                    } else {
+                        BackupSaves();
+                    }
+                    result = true;
+                } catch (Exception err) {
+                    LogUtil.Log("Backup saves failed!", LogLevel.Warn);
+                    err.LogDetailed(InfiniteBackupsModule.LoggerTagName);
+                    result = false;
+                }
+
+                dd_UserIO.Set(nameof(UserIO.SavingResult), UserIO.SavingResult & result);
+
+                if (InfiniteBackupsModule.Settings.AutoDeleteOldBackups) {
+                    LogUtil.Log("Deleting outdated backups...", LogLevel.Info);
                     try {
-                        if (InfiniteBackupsModule.Settings.BackupAsZipFile) {
-                            BackupSavesAsZipFile();
-                        } else {
-                            BackupSaves();
-                        }
-                        result = true;
+                        DeleteOutdatedSaves();
                     } catch (Exception err) {
-                        LogUtil.Log("Backup saves failed!", LogLevel.Warn);
+                        LogUtil.Log("Delete outdated backups failed!", LogLevel.Warn);
                         err.LogDetailed(InfiniteBackupsModule.LoggerTagName);
-                        result = false;
                     }
-
-                    dd_UserIO.Set(nameof(UserIO.SavingResult), UserIO.SavingResult & result);
-
-                    if (InfiniteBackupsModule.Settings.AutoDeleteOldBackups) {
-                        LogUtil.Log("Deleting outdated backups...", LogLevel.Info);
-                        try {
-                            DeleteOutdatedSaves();
-                        } catch (Exception err) {
-                            LogUtil.Log("Delete outdated backups failed!", LogLevel.Warn);
-                            err.LogDetailed(InfiniteBackupsModule.LoggerTagName);
-                        }
-                    }
-                });
-            }
+                }
+            });
         }
 
         private static DateTime? ParseBackupTime(string name) {
