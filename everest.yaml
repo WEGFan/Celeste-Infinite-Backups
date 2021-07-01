@@ -2,5 +2,7 @@
   Version: 1.1.1
   DLL: bin/InfiniteBackups.dll
   Dependencies:
+    - Name: Celeste
+      Version: 1.4.0.0
     - Name: Everest
-      Version: 1.2707.0
+      Version: 1.2879.0

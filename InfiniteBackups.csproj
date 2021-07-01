@@ -19,28 +19,49 @@
     <PropertyGroup Condition=" '$(Configuration)' == 'Release' ">
         <OutputPath>bin\</OutputPath>
         <DebugSymbols>true</DebugSymbols>
+        <DebugType>full</DebugType>
     </PropertyGroup>
-    <ItemGroup>
-        <Reference Include="Celeste">
-            <HintPath>lib-stripped\Celeste.exe</HintPath>
-            <Private>False</Private>
-        </Reference>
-        <Reference Include="FNA">
-            <HintPath>lib-stripped\FNA.dll</HintPath>
-            <Private>False</Private>
-        </Reference>
-        <Reference Include="MMHOOK_Celeste, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null">
-            <HintPath>lib-stripped\MMHOOK_Celeste.dll</HintPath>
-            <Private>False</Private>
-        </Reference>
-    </ItemGroup>
+    <Choose>
+        <When Condition="Exists('lib')">
+            <ItemGroup>
+                <Reference Include="Celeste">
+                    <Private>false</Private>
+                    <HintPath>lib\Celeste.exe</HintPath>
+                </Reference>
+                <Reference Include="MMHOOK_Celeste">
+                    <Private>false</Private>
+                    <HintPath>lib\MMHOOK_Celeste.dll</HintPath>
+                </Reference>
+                <Reference Include="FNA">
+                    <Private>false</Private>
+                    <HintPath>lib\FNA.dll</HintPath>
+                </Reference>
+            </ItemGroup>
+        </When>
+        <Otherwise>
+            <ItemGroup>
+                <Reference Include="Celeste">
+                    <Private>false</Private>
+                    <HintPath>lib-stripped\Celeste.exe</HintPath>
+                </Reference>
+                <Reference Include="MMHOOK_Celeste">
+                    <Private>false</Private>
+                    <HintPath>lib-stripped\MMHOOK_Celeste.dll</HintPath>
+                </Reference>
+                <Reference Include="FNA">
+                    <Private>false</Private>
+                    <HintPath>lib-stripped\FNA.dll</HintPath>
+                </Reference>
+            </ItemGroup>
+        </Otherwise>
+    </Choose>
     <ItemGroup>
         <PackageReference Include="DotNetZip" Version="1.13.8" PrivateAssets="all" ExcludeAssets="runtime" />
         <PackageReference Include="Mono.Cecil" Version="0.11.3" PrivateAssets="all" ExcludeAssets="runtime" />
-        <PackageReference Include="MonoMod" Version="21.03.01.01" PrivateAssets="all" ExcludeAssets="runtime" />
-        <PackageReference Include="MonoMod.RuntimeDetour" Version="21.03.01.01" PrivateAssets="all" ExcludeAssets="runtime" />
-        <PackageReference Include="MonoMod.RuntimeDetour.HookGen" Version="21.03.01.01" PrivateAssets="all" ExcludeAssets="runtime" />
-        <PackageReference Include="MonoMod.Utils" Version="21.03.01.01" PrivateAssets="all" ExcludeAssets="runtime" />
+        <PackageReference Include="MonoMod" Version="21.04.29.01" PrivateAssets="all" ExcludeAssets="runtime" />
+        <PackageReference Include="MonoMod.RuntimeDetour" Version="21.04.29.01" PrivateAssets="all" ExcludeAssets="runtime" />
+        <PackageReference Include="MonoMod.RuntimeDetour.HookGen" Version="21.04.29.01" PrivateAssets="all" ExcludeAssets="runtime" />
+        <PackageReference Include="MonoMod.Utils" Version="21.04.29.01" PrivateAssets="all" ExcludeAssets="runtime" />
         <PackageReference Include="YamlDotNet" Version="8.1.2" PrivateAssets="all" ExcludeAssets="runtime" />
     </ItemGroup>
 </Project>
