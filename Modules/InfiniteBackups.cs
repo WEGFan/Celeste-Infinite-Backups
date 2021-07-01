@@ -3,22 +3,33 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
 using System.Linq;
+using System.Reflection;
 using Celeste.Mod.InfiniteBackups.Utils;
 using Ionic.Zip;
 using MonoMod.Cil;
+using MonoMod.RuntimeDetour;
 using MonoMod.Utils;
 
 namespace Celeste.Mod.InfiniteBackups.Modules {
     public static class InfiniteBackups {
+        private static readonly DynamicData dd_UserIO = new DynamicData(typeof(UserIO));
+
+        public static readonly string BackupPath = dd_UserIO.Get<string>("BackupPath");
+
+        public static readonly string SavePath = dd_UserIO.Get<string>("SavePath");
+
+        private static ILHook ilHook_UserIO_SaveThread;
+
         public static void Load() {
-            IL.Celeste.UserIO.SaveThread += patch_UserIO_SaveThread;
+            ilHook_UserIO_SaveThread = new ILHook(typeof(UserIO).GetMethod("orig_SaveThread", ~BindingFlags.Default),
+                patch_UserIO_orig_SaveThread);
         }
 
         public static void Unload() {
-            IL.Celeste.UserIO.SaveThread -= patch_UserIO_SaveThread;
+            ilHook_UserIO_SaveThread?.Dispose();
         }
 
-        private static void patch_UserIO_SaveThread(ILContext il) {
+        private static void patch_UserIO_orig_SaveThread(ILContext il) {
             ILCursor cursor = new ILCursor(il);
 
             if (!cursor.TryGotoNext(MoveType.AfterLabel,
@@ -168,11 +179,5 @@ namespace Celeste.Mod.InfiniteBackups.Modules {
                 CloneDirectory(directory, subdirectory);
             }
         }
-
-        private static readonly DynamicData dd_UserIO = new DynamicData(typeof(UserIO));
-
-        public static readonly string BackupPath = dd_UserIO.Get<string>("BackupPath");
-
-        public static readonly string SavePath = dd_UserIO.Get<string>("SavePath");
     }
 }
