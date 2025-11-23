@@ -128,7 +128,9 @@ namespace Celeste.Mod.InfiniteBackups {
                         if (!Directory.Exists(backupPath)) {
                             Directory.CreateDirectory(backupPath);
                         }
-                        Process.Start(backupPath);
+                        Process.Start(new ProcessStartInfo(backupPath) {
+                            UseShellExecute = true
+                        });
                     } catch (Exception err) {
                         LogUtil.Log("Open backup folder failed!", LogLevel.Warn);
                         err.LogDetailed();
