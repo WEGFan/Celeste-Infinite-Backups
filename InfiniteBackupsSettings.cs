@@ -148,11 +148,9 @@ namespace Celeste.Mod.InfiniteBackups {
             // split the string into multiple lines to prevent off-screen menus caused by long path
             string[] descriptionLines = string.Format(DialogId.Subtext.BackupLocation.DialogGet(), Path.GetFullPath(Modules.InfiniteBackups.BackupPath)).SplitIntoFixedLength(50);
             TextMenuExt.EaseInSubHeaderExt backupLocationSubtext = new TextMenuExt.EaseInSubHeaderExt(string.Join("\n", descriptionLines), false, textMenu) {
-                TextColor = Color.Gray
+                TextColor = Color.Gray,
+                HeightExtra = 0,
             };
-            // increase the height and make it vertical align
-            backupLocationSubtext.HeightExtra = (backupLocationSubtext.Title.Split('\n').Length - 1) * ActiveFont.LineHeight * 0.6f;
-            backupLocationSubtext.Offset = new Vector2(0f, -Math.Max(0f, -16f + backupLocationSubtext.HeightExtra) + textMenu.ItemSpacing);
             textMenu.Add(backupLocationSubtext);
 
             TextMenuExt.EaseInSubHeaderExt openFailedSubtext = new TextMenuExt.EaseInSubHeaderExt(DialogId.Subtext.OpenBackupFolderFailed.DialogClean(), false, textMenu) {
